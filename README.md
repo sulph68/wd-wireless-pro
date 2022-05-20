@@ -21,9 +21,6 @@ This repo serves as an archive for the enhacements.
 ## Enhancements
 The base firmware used for these enhancements is 1.04.17. The exact firmware filename is `MyPassportWirelessGen2_1.04.17.bin`.
 
-*Note - Licenses of the various tools belongs to the respective owners as stated by them.*
-
-## Enhancements
 Enhancements made to the drive includes the building of additional binaries which is included as part of their GPL buildroot.
 This includes software and libraries such as:-
 - JPEG libraries
@@ -125,7 +122,13 @@ $ sudo ./compile-heif.sh
 
 If all the above is too hard, just use the pre-compiled files that i made and overlay them into your WDW. While i think the instuctions are pretty simple, you should have an idea of what you are trying to do.
 
+As Github has size limitations the deploy.tar.gz file is placed on google drive.
+
 ```
+# download the deploy.tar.gz file
+# https://drive.google.com/drive/folders/1aq2R0lIiDCbWjb2adynR63cTMt2CKpi_?usp=sharing
+# and place it into the install directory first.
+#
 $ cd install
 $ scp deploy.tar.gz root@mypassport.local:/CacheVolume/
 $ scp deploy.sh root@mypassport.local:/DataVolume/
@@ -155,3 +158,7 @@ If for some reason you want to revert to the original firmware, do the following
 
 The unit should be reverted to the original firmware.
 
+## Too difficult?
+
+If all the above is still too difficult, check out this firmware mod. Its been around for a while.
+https://www.hackwifidrive.com/wd-wireless-pro
