@@ -11,7 +11,14 @@ This repo serves as an archive for the enhacements.
 - https://www.westerndigital.com/en-ap/products/portable-drives/wd-my-passport-wireless-pro-hdd#WDBVPL0010BBK-NESN
 - https://support-en.wd.com/app/products/product-detail/p/261#WD_downloads
 - https://filebrowser.org
+- https://www.dechifro.org/dcraw/
+- https://github.com/monostream/tifig
+- https://github.com/strukturag/libheif
+- https://www.vim.org/
 
+*Note - Licenses of the various tools belongs to the respective owners as stated by them.*
+
+## Enhancements
 Enhancements made to the drive includes the building of additional binaries which is included as part of their GPL buildroot.
 This includes software and libraries such as:-
 - JPEG libraries
