@@ -126,7 +126,7 @@ As Github has size limitations the deploy.tar.gz file is placed on google drive.
 
 ```
 # download the deploy.tar.gz file
-# https://drive.google.com/drive/folders/1aq2R0lIiDCbWjb2adynR63cTMt2CKpi_?usp=sharing
+# https://drive.google.com/file/d/1UjQs8HYYEi3R1ifrEbW875Wr0b74KD-t/view?usp=sharing
 # and place it into the install directory first.
 #
 $ cd install
