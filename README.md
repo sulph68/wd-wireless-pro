@@ -8,9 +8,9 @@ I love the idea of a portable wireless drive which i can work off and provide fl
 This repo serves as an archive for the enhacements.
 
 ## References
-https://www.westerndigital.com/en-ap/products/portable-drives/wd-my-passport-wireless-pro-hdd#WDBVPL0010BBK-NESN
-https://support-en.wd.com/app/products/product-detail/p/261#WD_downloads
-https://filebrowser.org
+- https://www.westerndigital.com/en-ap/products/portable-drives/wd-my-passport-wireless-pro-hdd#WDBVPL0010BBK-NESN
+- https://support-en.wd.com/app/products/product-detail/p/261#WD_downloads
+- https://filebrowser.org
 
 Enhancements made to the drive includes the building of additional binaries which is included as part of their GPL buildroot.
 This includes software and libraries such as:-
