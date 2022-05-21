@@ -9,6 +9,7 @@ Copy the files to the same directory locations under the `addons` directory.
 ```
 $ scp addons/usr/local/bin/* root@mypassport.local:/usr/local/bin
 $ scp addons/etc/rc.local root@mypassport.local:/etc/rc.local
+```
 
 ## Notes
 
