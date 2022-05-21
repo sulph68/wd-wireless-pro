@@ -54,11 +54,11 @@ file_close() {
 				convert_heic "${1}${2}" "${PREVIEW_FILE}"
 			elif [ "${EXT,,}" == "heif" ]; then
 				convert_heic "${1}${2}" "${PREVIEW_FILE}"
-			# elif [ "${EXT,,}" == "jpg" ]; then
-			# 	convert -thumbnail "1024x768>" "${1}${2}" "${PREVIEW_FILE}"
-			# elif [ "${EXT,,}" == "jpeg" ]; then
-			# 	convert -thumbnail "1024x768>" "${1}${2}" "${PREVIEW_FILE}"
 			else
+				convert_raw "${1}${2}" "${PREVIEW_FILE}"
+			fi
+		else
+			if [ "${EXT,,}" == "raw" ]; then
 				convert_raw "${1}${2}" "${PREVIEW_FILE}"
 			fi
 		fi
@@ -120,11 +120,16 @@ inotifywait --format "%w:%e:%f" -q -m -r -e create,close_write,attrib,move,delet
 	TYPE=$(file_type "$DIRECTORY" "$FILE")
 	if [ "${TYPE}" == "image" ]; then
 		echo "Type supported: $TYPE, File: $FILE, Event: $EVENT"
-	# elif [ "${TYPE}" == "video" ]; then
-	# 	echo "Type supported: $TYPE, File: $FILE, Event: $EVENT"
+	elif [ "${TYPE}" == "video" ]; then
+		echo "Type supported: $TYPE, File: $FILE, Event: $EVENT"
 	else 
-		echo "Type not supported: $TYPE, File: $FILE"
-		continue
+		EXT=${FILE##*.}
+		if [ "${EXT,,}" == "raw" ]; then
+			echo "Cannot detect Mime, (${EXT}) may be supported. Trying. File: $FILE"
+		else
+			echo "Type not supported: $TYPE, File: $FILE"
+			continue
+		fi
 	fi
 	case $EVENT in
 		CREATE*)
