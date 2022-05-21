@@ -14,6 +14,7 @@ $ scp addons/etc/rc.local root@mypassport.local:/etc/rc.local
 ## Notes
 
 - notify.sh
+
 This is a inotifywait daemon written to watch for file additions in the `/DataVolume/Data` (source) directory.
 
 It works in hand with `filebrowser`. As `filebrowser` by default does not preview images other than known formats like JPEG, PNG, notify.sh leverages the various RAW and HEIC tools installed to generate thumbnails for those images in JPG format.
@@ -24,5 +25,6 @@ Deleting a supported file in the *source* directory also automatically cleans up
 If a *preview* directory is empty, it will also be removed
 
 - rc.local
+
 The rc.local file has been included to start notify.sh on boot. As the `DataVolume` might not be available at point of launch of `rc.local`, sleep is introduced to wait for the mount such that `notify.sh` can start properly.
 
