@@ -1,0 +1,14 @@
+#!/bin/bash
+
+. /etc/profile
+
+# starting notify
+for x in `seq 1 10`; do
+	if [ -d "/DataVolume" ]; then
+		/usr/local/bin/notify.sh > /tmp/notify.log &
+		break;
+	fi
+	sleep 2
+done
+
+exit 0;
