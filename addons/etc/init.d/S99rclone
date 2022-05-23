@@ -1,0 +1,41 @@
+#! /bin/sh
+
+set -e
+
+HTPASSWD="/home/root/.config/htpasswd"
+
+[[ ! -d "/home/root/.config" ]] && mkdir -p "/home/root/.config"
+if [ ! -f "${HTPASSWD}" ]; then
+	/usr/local/apache2/bin/htpasswd -cb "${HTPASSWD}" "admin" "admin"
+fi
+
+DESC="rclone"
+NAME=rclone
+DAEMON=/usr/local/bin/$NAME
+ARG="rcd --rc-web-gui --rc-addr 127.0.0.1:8043 --rc-baseurl /rclone --rc-htpasswd ${HTPASSWD} --rc-web-gui-no-open-browser"
+
+case "$1" in
+  start)
+        echo -n "Starting $DESC: "
+        start-stop-daemon -S -b -x $NAME -- $ARG
+        echo "OK"
+        ;;
+  stop)
+        echo -n "Stopping $DESC: "
+        start-stop-daemon -K -x $NAME
+        echo "OK"
+        ;;
+  restart|force-reload)
+        echo "Restarting $DESC: "
+        $0 stop
+        sleep 1
+        $0 start
+        echo ""
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+                            
+exit 0             

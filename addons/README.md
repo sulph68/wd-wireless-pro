@@ -28,3 +28,12 @@ If a *preview* directory is empty, it will also be removed
 
 The rc.local file has been included to start notify.sh on boot. As the `DataVolume` might not be available at point of launch of `rc.local`, sleep is introduced to wait for the mount such that `notify.sh` can start properly.
 
+- rclone
+
+https://downloads.rclone.org/v1.58.1/rclone-v1.58.1-linux-arm-v7.zip
+
+Download rclone from the https://rclone.org site and copy it into `/usr/local/bin`.
+
+rclone was installed to provide a flexible way to allow the WDW to sync to various sources. It includes a web GUI with the default username and password of `admin`. 
+A reverse proxy is implemented to forward https://mypassport.local/rclone to the configured port of `:8043`. Edits were made to `ifplugd.action` so that `run-parts` is executed to activate changes when wireless state is changed.
+A `htpasswd` file is also setup in the `/home/root/.config` directory to store the basic auth prompt auth file. Please check the `/etc/init.d/S99rclone` script to adjust the arguments. The result of installing this is a way to be able to copy your cloud storage files and have them with you when not connected to the internet. Please see https://rclone.org for more details around setting up rclone.

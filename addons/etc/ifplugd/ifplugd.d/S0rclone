@@ -1,0 +1,17 @@
+#!/bin/bash
+
+for x in `seq 1 10`; do
+	/sbin/ifconfig wlan1 | /bin/grep "inet addr"
+	if [ "$?" == "0" ]; then
+		echo "rclone restarted" > /tmp/rclone_status
+		/bin/systemctl restart rclone
+		exit 0
+	else
+		/bin/sleep 2	
+	fi
+done
+
+echo "rclone stopped" > /tmp/rclone_status
+/bin/systemctl stop rclone
+
+exit 1

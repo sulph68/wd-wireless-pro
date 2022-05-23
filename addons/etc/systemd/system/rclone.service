@@ -1,0 +1,12 @@
+[Unit]
+Description=rclone Web
+Requires=primax-hostapd.service
+Requires=primax-ifplugd.service
+
+[Service]
+Type=forking
+ExecStart=/etc/init.d/S99rclone start
+ExecStop=/etc/init.d/S99rclone stop
+
+[Install]
+WantedBy=multi-user.target
