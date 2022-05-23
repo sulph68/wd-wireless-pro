@@ -6,6 +6,8 @@ No promises that these addons works perfectly for you.
 ## Installation
 
 Copy the files to the same directory locations under the `addons` directory.
+
+For example:-
 ```
 $ scp addons/usr/local/bin/* root@mypassport.local:/usr/local/bin
 $ scp addons/etc/rc.local root@mypassport.local:/etc/rc.local
@@ -36,4 +38,4 @@ Download rclone from the https://rclone.org site and copy it into `/usr/local/bi
 
 rclone was installed to provide a flexible way to allow the WDW to sync to various sources. It includes a web GUI with the default username and password of `admin`. 
 A reverse proxy is implemented to forward https://mypassport.local/rclone to the configured port of `:8043`. Edits were made to `ifplugd.action` so that `run-parts` is executed to activate changes when wireless state is changed.
-A `htpasswd` file is also setup in the `/home/root/.config` directory to store the basic auth prompt auth file. Please check the `/etc/init.d/S99rclone` script to adjust the arguments. The result of installing this is a way to be able to copy your cloud storage files and have them with you when not connected to the internet. Please see https://rclone.org for more details around setting up rclone.
+A `htpasswd` file is also setup in the `/home/root/.config` directory to store the basic auth prompt auth file. Please check the `/etc/init.d/S99rclone` script to adjust the arguments. The result of installing this is a way to be able to copy your cloud storage files and have them with you when not connected to the internet. Please see https://rclone.org for more details around setting up rclone. If installed correctly, https://mypassport.local/rclone should go to the rclone web gui.
