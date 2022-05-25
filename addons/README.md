@@ -39,3 +39,23 @@ Download rclone from the https://rclone.org site and copy it into `/usr/local/bi
 rclone was installed to provide a flexible way to allow the WDW to sync to various sources. It includes a web GUI with the default username and password of `admin`. 
 A reverse proxy is implemented to forward https://mypassport.local/rclone to the configured port of `:8043`. Edits were made to `ifplugd.action` so that `run-parts` is executed to activate changes when wireless state is changed.
 A `htpasswd` file is also setup in the `/home/root/.config` directory to store the basic auth prompt auth file. Please check the `/etc/init.d/S99rclone` script to adjust the arguments. The result of installing this is a way to be able to copy your cloud storage files and have them with you when not connected to the internet. Please see https://rclone.org for more details around setting up rclone. If installed correctly, https://mypassport.local/rclone should go to the rclone web gui.
+
+- xinetd
+
+xinetd configuration and a service directory included in `/etc/xinetd.conf` and `/etc/xinetd.d`/
+
+-- vsftpd service
+
+This allows vsftpd to always be available without having to turn it on/off. This copies the same configuration as the default vsftpd, with slight edits to make it compatible with xinetd.
+
+- cronweb and cron
+
+https://www.fisherinnovation.com/
+
+Cronweb included to help cron configuration for timed jobs. `cron` also updated such that cron scripts can be layered on without being lost on reboot. This works well with rclone to sync files from remote configs into the drive.
+
+- filebrowser
+
+https://filebrowser.org
+
+Slight adjustments to the configuration to include a cache directory. better performance that way
