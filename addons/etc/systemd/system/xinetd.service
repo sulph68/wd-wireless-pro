@@ -1,0 +1,12 @@
+[Unit]
+Description=xinetd
+Requires=primax-hostapd.service
+Requires=primax-ifplugd.service
+
+[Service]
+Type=forking
+ExecStart=/etc/init.d/S99xinetd start
+ExecStop=/etc/init.d/S99xinetd stop
+
+[Install]
+WantedBy=multi-user.target

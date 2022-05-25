@@ -3,7 +3,7 @@
 for x in `seq 1 10`; do
 	/sbin/ifconfig wlan1 | /bin/grep "inet addr"
 	if [ "$?" == "0" ]; then
-		echo "rclone restarted" > /tmp/rclone_status
+		echo "$(/bin/date): rclone restarted" > /tmp/rclone_status
 		/bin/systemctl restart rclone
 		exit 0
 	else
@@ -11,7 +11,7 @@ for x in `seq 1 10`; do
 	fi
 done
 
-echo "rclone stopped" > /tmp/rclone_status
+echo "$(/bin/date): rclone stopped" > /tmp/rclone_status
 /bin/systemctl stop rclone
 
 exit 1

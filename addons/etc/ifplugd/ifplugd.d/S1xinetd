@@ -1,0 +1,20 @@
+#!/bin/bash
+
+for x in `seq 1 10`; do
+	/sbin/ifconfig wlan1 | /bin/grep "inet addr"
+	if [ "$?" == "0" ]; then
+		echo "$(/sbin/date): xinetd restarted" > /tmp/xinetd_status
+		/etc/init.d/S99xinetd stop
+		sleep 2
+		/etc/init.d/S99xinetd start
+		# /bin/systemctl restart xinetd
+		exit 0
+	else
+		/bin/sleep 2	
+	fi
+done
+
+echo "$(/sbin/date): xinetd stopped" > /tmp/xinetd_status
+/bin/systemctl stop xinetd
+
+exit 1
