@@ -67,3 +67,32 @@ Slight adjustments to the configuration to include a cache directory. better per
 https://www.libvips.org/
 
 Included static binaries for vips to improve speed of thumbnail generation for supported formats. `convert_raw`, `convert_heic` and `video_thumbnail` also adjustoed to use `vips` whenever possible. Will fall back on errors.
+
+- GNU Parallel
+
+https://www.gnu.org/software/parallel/
+
+Static compile for GNU parallel.
+
+- MOTD screen to display important system information upon login
+
+```
+  __  __      ___            ___         _   
+ |  \/  |_  _| _ \__ _ _____| _ \___ _ _| |_ 
+ | |\/| | || |  _/ _` (_-(_-|  _/ _ | '_|  _|
+ |_|  |_|\_, |_| \__,_/__/__|_| \___|_|  \__|
+         |__/ Wireless Drive                 
+
+System Information:
+Power : charging     | Batt: 91%        | CPUGov: ondemand      | MCUTemp: 42 deg
+RootFS: 990.898MB    | Free: 238.422MB  | Used  : 685.328MB     | Percent: 74%
+DiskFS: 1858.93GB    | Free: 1700.17GB  | Used  : 158.755GB     | Percent: 9%
+LAN IP: xxx.xxx.xx.x | SSID: xxxxxxxxxx | WAN IP: xxx.xxx.x.xxx | Clients: 0
+
+Device Hotspot Information:
+SSID 2.4GHz                    | SSID 5GHz                    | Security Key | 
+My Passport (2.4 GHz) - xxxxxx | My Passport (5 GHz) - xxxxxx | xxxxxxxx     | 
+
+Current time is: Sat May xx xx:xx:xx SGT 20xx, Welcome!
+
+```
