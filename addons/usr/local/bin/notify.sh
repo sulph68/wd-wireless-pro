@@ -114,7 +114,7 @@ file_attrib() {
 	file_close "$1" "$2"
 }
 
-inotifywait -c -q -m -r -e close_write,attrib,delete "${TARGET_DIR}" | while IFS=',' read "DIRECTORY" "EVENT" "FILE"; do
+inotifywait --format "%w:%e:%f" -q -m -r -e close_write,attrib,delete "${TARGET_DIR}" | while IFS=':' read "DIRECTORY" "EVENT" "FILE"; do
 	# echo "D: '$DIRECTORY', E: '$EVENT', F: '$FILE'"
 	if [ ! -e "$DIRECTORY$FILE" ]; then
 		# file is transient.
@@ -148,9 +148,9 @@ inotifywait -c -q -m -r -e close_write,attrib,delete "${TARGET_DIR}" | while IFS
 	(
 	flock -n 9 || exit 1
 	[[ ! -f /tmp/inotify.pipe ]] && touch /tmp/inotify.pipe
-	grep "${EVENT},${TYPE},${DIRECTORY},${FILE}" /tmp/inotify.pipe > /dev/null
+	grep "${EVENT}:${TYPE}:${DIRECTORY}:${FILE}" /tmp/inotify.pipe > /dev/null
 	if [ "$?" = "1" ]; then
-		echo "${EVENT},${TYPE},${DIRECTORY},${FILE}" >> /tmp/inotify.pipe
+		echo "${EVENT}:${TYPE}:${DIRECTORY}:${FILE}" >> /tmp/inotify.pipe
 	fi
 	) 9>/tmp/inotify.pipe.lock
 done &
@@ -165,7 +165,7 @@ while true; do
 		mv /tmp/inotify.pipe.tmp /tmp/inotify.pipe
 		) 9>/tmp/inotify.pipe.lock
 		# echo "${LOG}" 
-		IFS=',' read "EVENT" "TYPE" "DIRECTORY" "FILE" <<< ${LOG}
+		IFS=':' read "EVENT" "TYPE" "DIRECTORY" "FILE" <<< ${LOG}
 		echo "P: Processing (${EVENT}) for (${TYPE}): ${DIRECTORY}${FILE}"
 		case "${EVENT}" in
 			CLOSE_WRITE*)
@@ -183,5 +183,7 @@ while true; do
 				continue
 				;;
 		esac
+	else
+		sleep 1
 	fi
 done
