@@ -1,0 +1,44 @@
+#!/bin/sh
+
+FILENAME=$1 
+OUTFILE=$2
+
+if [ "${FILENAME}" = "" ]; then
+	echo "No filename provided!"
+	exit 1
+elif [ ! -f "${FILENAME}" ]; then
+	echo "Cannot find file: ${FILENAME}"
+	exit 1
+fi
+
+if [ "${OUTFILE}" = "" ]; then
+	OUTFILE="${FILENAME}.jpg"
+fi
+
+UNIXTIME=`date +%s`;
+TMPFILE="/tmp/file.${UNIXTIME}.jpg"
+
+tifig -w 1024 -p -i "${FILENAME}" -o "${TMPFILE}" 2> /dev/null
+
+if [ ! -s "${TMPFILE}" ]; then
+	echo "Convert failed (tifig): ${FILENAME}"
+	heif-convert -q 85 --quiet --no-colons "${FILENAME}" "${TMPFILE}"
+	if [ ! -s "${TMPFILE}" ]; then
+		echo "Convert failed (heif-convert): ${FILENAME}"
+		[[ -f "${TMPFILE}" ]] && rm -f "${TMPFILE}"
+		exit 1
+	else
+		echo "Convert passed (heif-convert): ${FILENAME}"
+	        # convert -thumbnail "1024x768>" "${TMPFILE}" "${OUTFILE}"
+	        vipsthumbnail -s "1024x768>" "${TMPFILE}" -o "${OUTFILE}"[Q=85,optimize_coding,interlace,strip]
+	fi
+else
+	mv "${TMPFILE}" "${OUTFILE}"
+fi
+
+if [ -f "${TMPFILE}" ]; then
+	rm -f "${TMPFILE}"
+fi
+
+exit 0
+

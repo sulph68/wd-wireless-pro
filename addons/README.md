@@ -26,6 +26,8 @@ Files are placed into the `/DataVolume/Preview` (preview) directory in the same 
 Deleting a supported file in the *source* directory also automatically cleans up the file in the *preview* directory.
 If a *preview* directory is empty, it will also be removed
 
+**Update:** notify now starts `inotifywait` in the background and watches a file based FIFO queue. Better handles spaces in directory names but file and directory names _should not_ contain commas ",". Will also cleanly stop `inotifywait` on termination of `notify.sh`
+
 - rc.local
 
 The rc.local file has been included to start notify.sh on boot. As the `DataVolume` might not be available at point of launch of `rc.local`, sleep is introduced to wait for the mount such that `notify.sh` can start properly.
@@ -59,3 +61,9 @@ Cronweb included to help cron configuration for timed jobs. `cron` also updated 
 https://filebrowser.org
 
 Slight adjustments to the configuration to include a cache directory. better performance that way
+
+- vips
+
+https://www.libvips.org/
+
+Included static binaries for vips to improve speed of thumbnail generation for supported formats. `convert_raw`, `convert_heic` and `video_thumbnail` also adjustoed to use `vips` whenever possible. Will fall back on errors.

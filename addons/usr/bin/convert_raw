@@ -1,0 +1,56 @@
+#!/bin/sh
+
+FILENAME=$1 
+OUTFILE=$2
+
+if [ "${FILENAME}" = "" ]; then
+	echo "No filename provided!"
+	exit 1
+elif [ ! -f "${FILENAME}" ]; then
+	echo "Cannot find file: ${FILENAME}"
+	exit 1
+fi
+
+if [ "${OUTFILE}" = "" ]; then
+	OUTFILE="${FILENAME}.jpg"
+fi
+
+UNIXTIME=`date +%s`;
+TMPFILE="/tmp/file.${UNIXTIME}.jpg"
+
+dcraw -c -w -h "${FILENAME}" > "${TMPFILE}"
+
+if [ ! -s "${TMPFILE}" ]; then
+	echo "Convert failed (dcraw): ${FILENAME}"
+	rm -f "${TMPFILE}"
+	# try using vips to convert file
+	vipsthumbnail -s "1024x768>" "${FILENAME}" -o "${TMPFILE}"[Q=85,optimize_coding,interlace,strip]
+	if [ ! -s "${TMPFILE}" ]; then
+		echo "Convert failed (vips): ${FILENAME}"
+		rm -f "${TMPFILE}"
+		# last try using convert from ImageMagik
+		convert -thumbnail "1024x768>" "${FILENAME}" "${TMPFILE}"
+		if [ ! -s "${TMPFILE}" ]; then
+			echo "Convert failed (convert): ${FILENAME}"
+			[[ -f "${TMPFILE}" ]] && rm -f "${TMPFILE}"
+			[[ -f "${OUTFILE}" ]] && rm -f "${OUTFILE}"
+			exit 1
+		else
+			echo "Convert passed (convert): ${FILENAME}"
+		fi
+	else
+		echo "Convert passed (vips): ${FILENAME}"
+	fi
+	mv "${TMPFILE}" "${OUTFILE}"
+else
+	# convert -thumbnail "1024x768>" "${TMPFILE}" "${OUTFILE}"
+	# change to vips coz its faster
+	vipsthumbnail -s "1024x768>" "${TMPFILE}" -o "${OUTFILE}"[Q=85,optimize_coding,interlace,strip]
+fi
+
+if [ -f "${TMPFILE}" ]; then
+	rm -f "${TMPFILE}"
+fi
+
+exit 0
+

@@ -1,0 +1,37 @@
+#!/bin/sh
+
+FILENAME=$1 
+OUTFILE=$2
+
+if [ "${FILENAME}" = "" ]; then
+	echo "No filename provided!"
+	exit 1
+elif [ ! -f "${FILENAME}" ]; then
+	echo "Cannot find file: ${FILENAME}"
+	exit 1
+fi
+
+if [ "${OUTFILE}" = "" ]; then
+	OUTFILE="${FILENAME}.jpg"
+fi
+
+UNIXTIME=`date +%s`;
+TMPFILE="/tmp/file.${UNIXTIME}.jpg"
+
+ffmpeg -y -i "${FILENAME}" -vf thumbnail,crop=w='min(iw\,ih)':h='min(iw\,ih)',scale=1024:768 -qscale:v 25 -frames:v 1 "${TMPFILE}" 2> /dev/null
+
+if [ ! -s "${TMPFILE}" ]; then
+	echo "Convert failed (ffmpeg): ${FILENAME}"
+	[[ -f "${TMPFILE}" ]] && rm -f "${TMPFILE}"
+	exit 1
+else
+	# convert -thumbnail "1024x768>" "${TMPFILE}" "${OUTFILE}"
+	vipsthumbnail -s "1024x768>" "${TMPFILE}" -o "${OUTFILE}"[Q=85,optimize_coding,interlace,strip]
+fi
+
+if [ -f "${TMPFILE}" ]; then
+	rm -f "${TMPFILE}"
+fi
+
+exit 0
+
