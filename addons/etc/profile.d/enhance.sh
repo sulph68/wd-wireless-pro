@@ -19,3 +19,5 @@ if [ -f /usr/bin/bc ]; then
 	unalias bc
 	alias calc='bc'
 fi
+
+[[ -d "/usr/local/parallel/bin" ]] && export PATH=$PATH:/usr/local/parallel/bin
