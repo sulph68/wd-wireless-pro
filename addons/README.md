@@ -96,3 +96,7 @@ My Passport (2.4 GHz) - xxxxxx | My Passport (5 GHz) - xxxxxx | xxxxxxxx     |
 Current time is: Sat May xx xx:xx:xx SGT 20xx, Welcome!
 
 ```
+
+- throttle_temp
+
+Added `throttle_temp` script that provides ability to SIGSTOP whitelisted high CPU processes based on `top`. A function allows if/else determination of commands that will be allowed to stop. Prevents accidental stopping of critical processes. This also integrates and adds ability to define start up scripts in root directory without editing into rc.local all the time. Temperature limits are defined in script. Tested with sync jobs started with rclone. Works well. 
