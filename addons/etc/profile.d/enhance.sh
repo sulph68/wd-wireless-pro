@@ -20,4 +20,10 @@ if [ -f /usr/bin/bc ]; then
 	alias calc='bc'
 fi
 
+[[ -f "usr/sbin/iftop" ]] && alias iftop="iftop -i wlan1"
 [[ -d "/usr/local/parallel/bin" ]] && export PATH=$PATH:/usr/local/parallel/bin
+
+# Imagemagick memory limit 32MB
+export MAGICK_MEMORY_LIMIT=33554432
+
+export PATH=$PATH:$HOME/local/bin

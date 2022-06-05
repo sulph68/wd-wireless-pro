@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# start throttle_temp
+for x in `seq 1 10`; do
+	if [ -d "/CacheVolume" ]; then
+		/home/root/local/bin/throttle_temp > /CacheVolume/throttle.log &
+		break;
+	fi
+	sleep 2
+done
+

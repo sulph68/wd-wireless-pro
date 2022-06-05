@@ -1,0 +1,144 @@
+#!/bin/sh
+
+# get system defined temperatures
+source /etc/wdcomp.d/wd-nas/temperature-monitor.conf
+
+STOPPED_PID=""
+
+TEMP_RS=58 #68
+TEMP_T1=60 #68
+TEMP_T2=65 #72
+TEMP_T3=70 #75
+
+check_pid() {
+	local PSID=$1
+	local PSNAME=$(echo $1 | awk -F: '{ print $2 }')
+	# a whitelist of command names to whitelist to be stoppable
+	if [ "$PSNAME" = "rclone" ]; then
+		return 0
+	else
+		return 1
+	fi
+	return 1
+}
+
+suspend_pid() {
+	local PSID=$1
+	local PSPID=$(echo $1 | awk -F: '{ print $1 }')
+	echo "Stopping PID: ${PSPID}"
+	kill -s STOP ${PSPID}
+}
+
+resume_pid() {
+	local PSID=$1
+	local PSPID=$(echo $1 | awk -F: '{ print $1 }')
+	echo "Resume PID: ${PSPID}"
+	kill -s CONT ${PSPID}
+}
+
+while ((1)); do
+
+# get PID of processes with CPU > 50%
+BADPID=$(top -bH -n1 -o +%CPU | grep COMMAND -A10 | awk '{if ($7 > 40) print $1":"$11 }' | tr '\n' ' ')
+# HDDTEMP=$(cat /tmp/mcuTemperature | awk '{ print $4}')
+# use an ave temp instead of just HDD temp
+HDDTEMP=$(cat /tmp/mcuTemperature | awk '{ print int(($1+$2+$3+$4)/4) }')
+
+WHITELISTPID=""
+for x in ${BADPID}; do
+	check_pid "${x}"
+	if [ "$?" = "0" ]; then
+		# echo "good id: ${x}"
+		if [ "${WHITELISTPID}" = "" ]; then
+			WHITELISTPID="${x}"
+		else
+			WHITELISTPID="${WHITELISTPID} ${x}"
+		fi
+	# else
+		# echo "bad id: ${x}"
+	fi
+done
+BADPID="${WHITELISTPID}"
+
+if [ ${HDDTEMP} -lt ${TEMP_RS} ]; then
+	# Temp back to normal resuming jobs
+	echo "$(date): Ave Temperature (${HDDTEMP}) low. Good for resuming jobs.";
+	if [ "${STOPPED_PID}" != "" ]; then
+		echo "Resuming PIDs: ${STOPPED_PID}"
+		for x in ${STOPPED_PID}; do
+			resume_pid "${x}"
+		done
+		STOPPED_PID=""
+	else
+		echo "Potential Bad PID: ${BADPID}"
+	fi
+	# set cpu frequencies to maximum scale
+	echo "CPU scale set at max: 1099998"
+	echo "1099998" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+	echo "1099998" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+elif [[ ${HDDTEMP} -lt ${TEMP_T1} || "${HDDTEMP}" == "${TEMP_T1}" ]]; then
+	# Temp back to normal
+	echo "$(date): Ave Temperature (${HDDTEMP}) normal.";
+	if [ "${STOPPED_PID}" != "" ]; then
+		echo "Not at resume Temp of (${TEMP_RS}). Stopped PIDs: ${STOPPED_PID}"
+	else
+		if [ "${BADPID}" != "" ]; then
+			echo "Potential Bad PID: ${BADPID}"
+		else
+			echo "No high CPU usage PIDs."
+		fi
+	fi
+	# set cpu frequencies to maximum scale
+	echo "CPU scale set at max: 1099998"
+	echo "1099998" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+	echo "1099998" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+elif [ ${HDDTEMP} -gt ${TEMP_T1} ] && [ ${HDDTEMP} -le ${TEMP_T2} ]; then
+	# Temp getting high. Throttle high CPU processes
+	echo "$(date): Ave Temperature (${HDDTEMP}) warning. Stopping high load jobs so system can cool.";
+  # echo $(top -bH -n1 -o +%CPU | grep COMMAND -A10)
+	if [ "${BADPID}" = "" ]; then
+		echo "No stoppable processes with > 40% CPU. Cannot suspend anything!"
+		echo "Stopped PIDs: ${STOPPED_PID}"
+	else
+		echo "Stopping high load jobs so system can cool: ${BADPID}";
+		if [ "${STOPPED_PID}" = "" ]; then
+			STOPPED_PID="${BADPID}"
+		else
+			STOPPED_PID="${STOPPED_PID} ${BADPID}"
+		fi
+		for x in ${BADPID}; do
+			suspend_pid "${x}"
+		done
+	fi
+	# slow down CPU to help cool
+	echo "Slowing down CPU to 499981"
+	echo "499981" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+	echo "499981" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+elif [ ${HDDTEMP} -gt ${TEMP_T2} ]; then
+	echo "$(date): Ave Temperature (${HDDTEMP}) is critical. System is probably going to hang."
+  # echo $(top -bH -n1 -o +%CPU | grep COMMAND -A10)
+	if [ "${BADPID}" = "" ]; then
+		echo "No stoppable processes with > 40% CPU. Cannot suspend anything!"
+		echo "Stopped PIDs: ${STOPPED_PID}"
+	else
+		echo "Stopping high load jobs so system can cool: ${BADPID}";
+		if [ "${STOPPED_PID}" = "" ]; then
+			STOPPED_PID="${BADPID}"
+		else
+			STOPPED_PID="${STOPPED_PID} ${BADPID}"
+		fi
+		for x in ${BADPID}; do
+			suspend_pid "${x}"
+		done
+	fi
+	# really slow down CPU to help cool
+	echo "Slowing down CPU to 289997"
+	echo "289997" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+	echo "289997" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+else
+	echo "Nothing matching?!"
+fi
+
+sleep 30 
+
+done

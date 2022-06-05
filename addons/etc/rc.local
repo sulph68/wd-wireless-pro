@@ -11,4 +11,12 @@ for x in `seq 1 10`; do
 	sleep 2
 done
 
+# run root custom startup scripts
+if [ -d "/home/root/local/etc/init.d/" ]; then
+	/bin/run-parts /home/root/local/etc/init.d
+fi
+
+# cleaning nohup.out files
+[[ -f "/usr/local/bin/clean_nohup" ]] && /usr/local/bin/clean_nohup &
+
 exit 0;
